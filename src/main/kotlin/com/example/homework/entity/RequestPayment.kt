@@ -8,7 +8,7 @@ class RequestPayment(
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val requestPayment_id: Long,
+    val requestPayment_id: Long? = null,
 
     @Column(nullable = false)
     val shopName: String,
@@ -27,5 +27,36 @@ class RequestPayment(
     @JoinColumn(name = "shop_id")
     val shop: Shop
 ) {
+
+    companion object{
+        fun fixture(
+            /*requestPayment_id: Long,
+            shopName: String,
+            price: Int,
+            user: User,
+            shop: Shop,*/
+            requestPaymentDTO: RequestPaymentDTO
+        ): RequestPayment{
+            return RequestPayment(
+                requestPayment_id = requestPaymentDTO.requestPayment_id,
+                shopName = requestPaymentDTO.shopName,
+                price = requestPaymentDTO.price,
+                isComplete = false,
+                user = User.fixture(),
+                shop = Shop.fixture()
+            )
+        }
+
+        fun toEntity(requestPaymentDTO: RequestPaymentDTO): RequestPayment = RequestPayment(
+            requestPayment_id = requestPaymentDTO.requestPayment_id,
+            shopName = requestPaymentDTO.shopName,
+            price = requestPaymentDTO.price,
+            isComplete = false,
+            user = User.fixture(),
+            shop = Shop.fixture(),
+        )
+    }
+
+
 
 }

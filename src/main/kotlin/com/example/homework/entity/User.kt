@@ -11,9 +11,9 @@ import jakarta.persistence.OneToMany
 class User(
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    val user_id: Long,
+    val user_id: Long? = null,
 
     @Column(nullable = false)
     val email: String,
@@ -33,7 +33,7 @@ class User(
 
     companion object {
         fun fixture(
-            user_id: Long = 1L,
+            user_id: Long? = null,
             email: String = "tmfrl1570@naver.com",
             fcmToken: String = "asdasdadada",
             money: Int = 5000

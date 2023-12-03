@@ -1,10 +1,12 @@
 package com.example.homework.service
 
 import com.example.homework.dto.RequestPaymentDTO
+import com.example.homework.entity.RequestPayment
 import com.example.homework.entity.Shop
 import com.example.homework.repository.RequestPaymentRepository
 import com.example.homework.repository.ShopRepository
 import com.example.homework.repository.UserRepository
+import org.apache.coyote.Request
 import org.springframework.stereotype.Service
 
 @Service
@@ -24,10 +26,18 @@ class RequestPaymentService(
         //shop.requestPayment(request)
         //val shop = shopRepository.findById(1L)
 
+        //val entity = RequestPayment.fixture(request)
+        val entity = RequestPayment.fixture(request)
 
-        val requestEntity = request.toEntity()
-        println(request.toString())
-        requestPaymentRepository.save(requestEntity)
+        println("엔티티 : ${entity.requestPayment_id}")
+        println("엔티티 : ${entity.price}")
+        println("엔티티 : ${entity.shopName}")
+        println("엔티티 : ${entity.user.requestPaymentList}")
+        println("엔티티 : ${entity.shop.shop_id}")
+
+        //val requestEntity = request.toEntity()
+
+        requestPaymentRepository.save(entity)
 
         return "결제요청이 완료되었습니다."
     }

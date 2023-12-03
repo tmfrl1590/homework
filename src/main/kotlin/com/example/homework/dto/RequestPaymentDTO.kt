@@ -5,10 +5,10 @@ import com.example.homework.entity.Shop
 import com.example.homework.entity.User
 
 data class RequestPaymentDTO(
-    val requestPayment_id: Long,
+    val requestPayment_id: Long? = null,
     val shopName: String,
     val price: Int,
-    val isComplete: Boolean,
+    val isComplete: Boolean ,
 ){
 
     fun toEntity(): RequestPayment = RequestPayment(
@@ -18,6 +18,5 @@ data class RequestPaymentDTO(
         isComplete = false,
         user = User.fixture(),
         shop = Shop.fixture(),
-        //shop = Shop(1L, "패스트캠퍼스")
     )
 }

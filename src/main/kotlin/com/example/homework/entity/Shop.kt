@@ -9,7 +9,7 @@ class Shop(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "shop_id")
-    val shop_id: Long,
+    val shop_id: Long? = null,
 
     @Column(nullable = false)
     val shopName: String,
@@ -20,7 +20,7 @@ class Shop(
 
     companion object {
         fun fixture(
-            shop_id: Long = 1L,
+            shop_id: Long? = null,
             shopName: String = "패스트캠퍼스",
         ): Shop {
             return Shop(
