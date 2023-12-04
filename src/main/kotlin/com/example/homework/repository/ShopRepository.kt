@@ -6,5 +6,5 @@ import java.util.*
 
 interface ShopRepository: JpaRepository<Shop, Long> {
 
-
+    fun findByShopName(shopName: String?): Shop?
 }

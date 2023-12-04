@@ -6,11 +6,11 @@ import jakarta.persistence.*
 class PaymentHistory(
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    val paymentHistory_id: Long,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val paymentHistory_id: Long? = null,
 
     @Column(nullable = false)
-    val shop_id: String,
+    val shop_id: Long,
 
     @Column(nullable = false)
     val price: Int,
@@ -19,9 +19,9 @@ class PaymentHistory(
     val isSuccess: Boolean,
 
     @Column(nullable = false)
-    val requestPayment_id: String,
+    val requestPayment_id: Long,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val user: User,
 ) {

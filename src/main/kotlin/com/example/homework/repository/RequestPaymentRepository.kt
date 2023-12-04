@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 
 interface RequestPaymentRepository: JpaRepository<RequestPayment, Long> {
 
+
 }

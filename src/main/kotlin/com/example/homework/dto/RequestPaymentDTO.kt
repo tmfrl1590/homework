@@ -1,22 +1,24 @@
 package com.example.homework.dto
 
-import com.example.homework.entity.RequestPayment
-import com.example.homework.entity.Shop
-import com.example.homework.entity.User
+import com.fasterxml.jackson.annotation.JsonProperty
+import jakarta.validation.constraints.Min
+import org.hibernate.validator.constraints.Range
 
 data class RequestPaymentDTO(
-    val requestPayment_id: Long? = null,
+
     val shopName: String,
-    val price: Int,
+
+    @field:Min(value = 10000, message = "가격은 10000원 이상 입력해주세요.")
+    @JsonProperty("price")
+    private val _price: Int?,
+
     val isComplete: Boolean ,
 ){
 
-    fun toEntity(): RequestPayment = RequestPayment(
-        requestPayment_id = requestPayment_id,
-        shopName = shopName,
-        price = price,
-        isComplete = false,
-        user = User.fixture(),
-        shop = Shop.fixture(),
-    )
+    val price: Int
+        get() = _price!!
 }
+
+data class CreateShopDTO(
+    val shopName: String,
+)

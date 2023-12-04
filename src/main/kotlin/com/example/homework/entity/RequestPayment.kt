@@ -2,12 +2,13 @@ package com.example.homework.entity
 
 import com.example.homework.dto.RequestPaymentDTO
 import jakarta.persistence.*
+import org.hibernate.annotations.Fetch
 
 @Entity
 class RequestPayment(
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val requestPayment_id: Long? = null,
 
     @Column(nullable = false)
@@ -19,44 +20,33 @@ class RequestPayment(
     @Column(nullable = false)
     val isComplete: Boolean = false,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val user: User,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id")
     val shop: Shop
 ) {
 
     companion object{
         fun fixture(
-            /*requestPayment_id: Long,
+            requestPayment_id: Long? = null,
             shopName: String,
             price: Int,
-            user: User,
-            shop: Shop,*/
-            requestPaymentDTO: RequestPaymentDTO
+            user: User? = null,
+            shop: Shop? = null,
         ): RequestPayment{
             return RequestPayment(
-                requestPayment_id = requestPaymentDTO.requestPayment_id,
-                shopName = requestPaymentDTO.shopName,
-                price = requestPaymentDTO.price,
+                requestPayment_id = requestPayment_id,
+                shopName = shopName,
+                price = price,
                 isComplete = false,
-                user = User.fixture(),
-                shop = Shop.fixture()
+                user = user!!,
+                shop = shop!!
             )
         }
 
-        fun toEntity(requestPaymentDTO: RequestPaymentDTO): RequestPayment = RequestPayment(
-            requestPayment_id = requestPaymentDTO.requestPayment_id,
-            shopName = requestPaymentDTO.shopName,
-            price = requestPaymentDTO.price,
-            isComplete = false,
-            user = User.fixture(),
-            shop = Shop.fixture(),
-        )
     }
-
-
 
 }

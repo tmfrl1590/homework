@@ -31,7 +31,11 @@ dependencies {
     // Mysql
     implementation("mysql:mysql-connector-java:8.0.29")
 
+    // validation
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
 }
+
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {

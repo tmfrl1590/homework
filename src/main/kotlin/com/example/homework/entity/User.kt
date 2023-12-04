@@ -1,11 +1,6 @@
 package com.example.homework.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.OneToMany
+import jakarta.persistence.*
 
 @Entity
 class User(
@@ -24,7 +19,7 @@ class User(
     @Column(nullable = true)
     val money: Int,
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     val requestPaymentList: MutableList<RequestPayment> = mutableListOf(),
 
     @OneToMany(mappedBy = "user")
@@ -33,7 +28,7 @@ class User(
 
     companion object {
         fun fixture(
-            user_id: Long? = null,
+            user_id: Long?,
             email: String = "tmfrl1570@naver.com",
             fcmToken: String = "asdasdadada",
             money: Int = 5000
