@@ -25,4 +25,23 @@ class PaymentHistory(
     @JoinColumn(name = "user_id")
     val user: User,
 ) {
+    companion object {
+        fun fixture(
+            paymentHistory_id: Long? = null,
+            shop_id: Long,
+            price: Int,
+            isSuccess: Boolean,
+            requestPayment_id: Long,
+            user: User? = null
+        ): PaymentHistory{
+            return PaymentHistory(
+                paymentHistory_id = paymentHistory_id,
+                shop_id = shop_id,
+                price = price,
+                isSuccess = isSuccess,
+                requestPayment_id = requestPayment_id,
+                user = user!!,
+            )
+        }
+    }
 }

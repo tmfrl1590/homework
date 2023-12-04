@@ -20,7 +20,7 @@ class Shop(
     companion object {
         fun fixture(
             shop_id: Long?,
-            shopName: String = "더드림",
+            shopName: String,
         ): Shop {
             return Shop(
                 shop_id = shop_id,

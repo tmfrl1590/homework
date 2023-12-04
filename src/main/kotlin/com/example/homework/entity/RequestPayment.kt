@@ -18,7 +18,7 @@ class RequestPayment(
     val price: Int = 10000,
 
     @Column(nullable = false)
-    val isComplete: Boolean = false,
+    var isComplete: Boolean = false,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -28,6 +28,11 @@ class RequestPayment(
     @JoinColumn(name = "shop_id")
     val shop: Shop
 ) {
+
+    // 결제가 끝나면 완료처리
+    fun completeRequestPayment(){
+        this.isComplete = true
+    }
 
     companion object{
         fun fixture(
@@ -46,7 +51,5 @@ class RequestPayment(
                 shop = shop!!
             )
         }
-
     }
-
 }

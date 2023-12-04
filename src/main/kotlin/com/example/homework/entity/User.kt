@@ -26,19 +26,5 @@ class User(
     val paymentHistory: MutableList<PaymentHistory> = mutableListOf(),
 ) {
 
-    companion object {
-        fun fixture(
-            user_id: Long?,
-            email: String = "tmfrl1570@naver.com",
-            fcmToken: String = "asdasdadada",
-            money: Int = 5000
-        ): User{
-            return User(
-                user_id = user_id,
-                email = email,
-                fcmToken = fcmToken,
-                money = money
-            )
-        }
-    }
+
 }
