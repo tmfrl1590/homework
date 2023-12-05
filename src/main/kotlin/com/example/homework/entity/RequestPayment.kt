@@ -1,9 +1,9 @@
 package com.example.homework.entity
 
-import com.example.homework.dto.RequestPaymentDTO
 import jakarta.persistence.*
-import org.hibernate.annotations.Fetch
+import org.springframework.data.redis.core.RedisHash
 
+@RedisHash("RequestPayment")
 @Entity
 class RequestPayment(
 

@@ -2,7 +2,6 @@ package com.example.homework.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.Min
-import org.hibernate.validator.constraints.Range
 
 data class RequestPaymentDTO(
 

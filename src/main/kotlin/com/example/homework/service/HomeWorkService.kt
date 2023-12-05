@@ -7,10 +7,9 @@ import com.example.homework.entity.PaymentHistory
 import com.example.homework.entity.RequestPayment
 import com.example.homework.entity.Shop
 import com.example.homework.entity.User
-import com.example.homework.repository.PaymentHistoryRepository
-import com.example.homework.repository.RequestPaymentRepository
-import com.example.homework.repository.ShopRepository
-import com.example.homework.repository.UserRepository
+import com.example.homework.repository.*
+import com.example.homework.util.ResultResponse
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -20,48 +19,54 @@ class HomeWorkService(
     private val requestPaymentRepository: RequestPaymentRepository,
     private val shopRepository: ShopRepository,
     private val paymentHistoryRepository: PaymentHistoryRepository,
+    private val redisRepository: RedisRepository,
 ) {
 
     // 1만원 결제요청
+    @Transactional
     fun requestPayment(request: RequestPaymentDTO): String {
-
-        val shop: Shop? = shopRepository.findByShopName(request.shopName)
-        val user: User? = userRepository.findByEmail("tmfrl1570@naver.com")
+        val shop: Shop? = shopRepository.findByShopName(request.shopName) ?: throw IllegalStateException(ResultResponse.NOT_EXIST_SHOP.message)
+        val user: User = userRepository.findByEmail("tmfrl1570@naver.com")
 
         val entity = RequestPayment.fixture(
             requestPayment_id = null,
             shopName = request.shopName,
             price = request.price,
             shop = shop,
-            user = user
+            user = user,
         )
 
-        requestPaymentRepository.save(entity)
+        requestPaymentRepository.save(entity) // 저장(결제요청)
 
         // 저장 후 FCM 푸시로 클라이언트에게 푸시 알람 발송 - "가맹점으로부터 결제요청이 들어왔습니다"
 
-        return "결제요청이 완료되었습니다."
+        return ResultResponse.COMPLETE_PAYMENT_REQUEST.message
     }
 
     // 결제하기
     @Transactional
     fun doPayment(requestPayment_id: Long): String {
 
+
+
+
         // requestPayment_id 에 해당하는 결제 요청을 조회해옴
-        val requestPayment = requestPaymentRepository.findById(requestPayment_id).orElseThrow()
+        val requestPayment = requestPaymentRepository.findByIdOrNull(requestPayment_id) ?: throw IllegalStateException(ResultResponse.NOT_EXIST_PAYMENT_REQUEST.message)
+
+        //redisRepository.save(requestPayment)
+        //println(redisRepository.findById(requestPayment_id))
 
         // 이미 완료된 결제 요청인지 체크
         if (requestPayment.isComplete) {
-            throw IllegalStateException("이미 결제가 완료된 요청사항입니다.")
+            throw IllegalStateException(ResultResponse.COMPLETED_PAYMENT_REQUEST.message)
         }
 
         // 결제를 하는 유저 정보 불러오기
         val user = userRepository.findByEmail("tmfrl1570@naver.com")
 
         // 금액이 부족하면 결제가 안되야함
-
-        if (user!!.money < 10000) {
-            throw IllegalStateException("금액이 부족해서 결제에 실패했습니다")
+        if (user.money < 10000) {
+            throw IllegalStateException(ResultResponse.FAIL_PAYMENT_MONEY.message)
         }
 
         // 결제하기
@@ -73,28 +78,31 @@ class HomeWorkService(
             user = user,
         )
 
-        paymentHistoryRepository.save(paymentEntity)
+        paymentHistoryRepository.save(paymentEntity) // 결제
 
-        // 결제가 끝나면 완료처리
+        // 결제가 끝나면 결제요청의 완료처리, 돈 차감
         requestPayment.completeRequestPayment()
+        user.updateMoney(10000)
 
-        return "결제가 완료되었습니다."
+        return ResultResponse.COMPLETE_PAYMENT.message
     }
 
     // 가맹점의 결제 요청 목록들
     @Transactional(readOnly = true)
     fun getRequestPayment(): List<RequestPaymentResponse> {
         val user = userRepository.findByEmail("tmfrl1570@naver.com")
-        return requestPaymentRepository.findAll().map { requestPayment -> RequestPaymentResponse.of(requestPayment) }
+        return requestPaymentRepository.findAll()
+            .filter { it.user.user_id == user.user_id && !it.isComplete }
+            .map {requestPayment -> RequestPaymentResponse.of(requestPayment)}
     }
 
     // 매장생성
+    @Transactional
     fun createShop(request: CreateShopDTO): String {
-        val shop: Shop? = shopRepository.findByShopName(request.shopName)
-        if(shop != null){
-            throw IllegalStateException("이미 존재하는 매장의 이름입니다.")
-        }
+        val shop = shopRepository.findByShopName(request.shopName)
+        if (shop != null) throw IllegalStateException(ResultResponse.EXIST_SHOP.message)
+
         shopRepository.save(Shop.fixture(null, shopName = request.shopName))
-        return "매장생성이 완료되었습니다."
+        return ResultResponse.CREATE_SHOP.message
     }
 }

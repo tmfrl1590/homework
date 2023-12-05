@@ -17,7 +17,7 @@ class User(
     val fcmToken: String,
 
     @Column(nullable = true)
-    val money: Int,
+    var money: Int,
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     val requestPaymentList: MutableList<RequestPayment> = mutableListOf(),
@@ -26,5 +26,8 @@ class User(
     val paymentHistory: MutableList<PaymentHistory> = mutableListOf(),
 ) {
 
+    fun updateMoney(price: Int){
+        this.money -= price
+    }
 
 }
