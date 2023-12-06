@@ -18,7 +18,7 @@ class Shop(
 ) {
 
     companion object {
-        fun fixture(
+        fun of(
             shop_id: Long?,
             shopName: String,
         ): Shop {

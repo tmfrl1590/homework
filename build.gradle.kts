@@ -26,6 +26,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
+    // JPA
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     // Mysql
@@ -37,8 +38,11 @@ dependencies {
     // Redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
-}
+    // JUnit5
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
 
+}
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
@@ -48,5 +52,10 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+// JUnit5
+tasks.test{
     useJUnitPlatform()
 }

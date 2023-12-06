@@ -1,9 +1,7 @@
 package com.example.homework.entity
 
 import jakarta.persistence.*
-import org.springframework.data.redis.core.RedisHash
 
-@RedisHash("RequestPayment")
 @Entity
 class RequestPayment(
 

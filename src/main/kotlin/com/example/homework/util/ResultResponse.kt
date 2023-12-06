@@ -17,6 +17,8 @@ enum class ResultResponse(
 
     FAIL_PAYMENT_MONEY(ResultCode.ERROR, "금액이 부족해서 결제 실패했습니다."),
     COMPLETE_PAYMENT(ResultCode.SUCCESS, "결제가 완료되었습니다."),
+
+    DUPLICATION_REQUEST(ResultCode.ERROR, "중복된 요청입니다."),
 }
 
 enum class ResultCode(

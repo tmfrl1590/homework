@@ -1,7 +1,9 @@
 package com.example.homework.repository
 
-import com.example.homework.entity.RequestPayment
+import com.example.homework.entity.RedisEntity
 import org.springframework.data.repository.CrudRepository
+import org.springframework.stereotype.Repository
 
-interface RedisRepository: CrudRepository<RequestPayment, Long>{
+@Repository
+interface RedisRepository: CrudRepository<RedisEntity, Long>{
 }

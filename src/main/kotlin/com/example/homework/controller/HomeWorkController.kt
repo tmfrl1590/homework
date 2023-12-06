@@ -1,22 +1,17 @@
 package com.example.homework.controller
 
-import com.example.homework.dto.RequestPaymentDTO
 import com.example.homework.dto.CreateShopDTO
+import com.example.homework.dto.RequestPaymentDTO
 import com.example.homework.dto.RequestPaymentResponse
-import com.example.homework.entity.Shop
 import com.example.homework.service.HomeWorkService
 import com.example.homework.util.BaseResponse
 import com.example.homework.util.ResultResponse
 import jakarta.validation.Valid
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class HomeWorkController(
-    private val requestPaymentService: HomeWorkService
+    private val requestPaymentService: HomeWorkService,
 ) {
 
     // 1만원 결제 요청
@@ -31,9 +26,8 @@ class HomeWorkController(
         val resultList = requestPaymentService.getRequestPayment()
         return BaseResponse(
             data = resultList,
-            message =
-                if(resultList.isNotEmpty()) ResultResponse.SUCCESS_PAYMENT_REQUEST.message
-                else ResultResponse.SUCCESS_PAYMENT_REQUEST_NODATA.message
+            message = if(resultList.isNotEmpty()) ResultResponse.SUCCESS_PAYMENT_REQUEST.message
+                      else ResultResponse.SUCCESS_PAYMENT_REQUEST_NODATA.message
         )
     }
 

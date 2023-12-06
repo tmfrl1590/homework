@@ -30,4 +30,20 @@ class User(
         this.money -= price
     }
 
+    companion object {
+        fun of(
+            user_id: Long?,
+            email: String,
+            fcmToken: String,
+            money: Int
+        ): User {
+            return User(
+                user_id = user_id,
+                email = email,
+                fcmToken = fcmToken,
+                money = money,
+            )
+        }
+    }
+
 }

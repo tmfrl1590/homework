@@ -12,17 +12,18 @@ class CustomExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     protected fun methodArgumentNotValidException(ex: MethodArgumentNotValidException): ResponseEntity<BaseResponse<Map<String, String>>>{
+        println("MethodArgumentNotValidException")
         val errors = mutableMapOf<String, String>()
         ex.bindingResult.allErrors.forEach { error ->
             val fieldName = (error as FieldError).field
             val errorMessage = error.defaultMessage
             errors[fieldName] = errorMessage ?: "Not Exception Message"
         }
+
         return ResponseEntity(
             BaseResponse(
                 code = ResultCode.ERROR.name,
-                data = null,
-                message = ex.message
+                data = errors,
             ),
             HttpStatus.BAD_REQUEST
         )
@@ -30,11 +31,12 @@ class CustomExceptionHandler {
 
     @ExceptionHandler(InvalidInputException::class)
     protected fun invalidInputException(ex: InvalidInputException): ResponseEntity<BaseResponse<Map<String, String>>> {
+        println("InvalidInputException")
         val errors = mapOf(ex.fieldName to (ex.message ?: "Not Exception Message"))
         return ResponseEntity(
             BaseResponse(
                 code = ResultCode.ERROR.name,
-                data = null,
+                data = errors,
                 message = ex.message
             ),
             HttpStatus.BAD_REQUEST
@@ -44,11 +46,9 @@ class CustomExceptionHandler {
     @ExceptionHandler(Exception::class)
     protected fun defaultException(ex: Exception): ResponseEntity<BaseResponse<Map<String, String>>>{
         println("defaultException")
-        val errors = mapOf("예외" to (ex.message ?: "Not Exception Message"))
         return ResponseEntity(
             BaseResponse(
                 code = ResultCode.ERROR.name,
-                data = null,
                 message = ex.message
             ),
             HttpStatus.BAD_REQUEST
