@@ -3,7 +3,7 @@ package com.example.homework.entity
 import jakarta.persistence.*
 
 @Entity
-class PaymentHistory(
+class Payment(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,8 +33,8 @@ class PaymentHistory(
             isSuccess: Boolean,
             requestPayment_id: Long,
             user: User? = null
-        ): PaymentHistory{
-            return PaymentHistory(
+        ): Payment{
+            return Payment(
                 paymentHistory_id = paymentHistory_id,
                 shop_id = shop_id,
                 price = price,

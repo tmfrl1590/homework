@@ -23,7 +23,7 @@ class User(
     val requestPaymentList: MutableList<RequestPayment> = mutableListOf(),
 
     @OneToMany(mappedBy = "user")
-    val paymentHistory: MutableList<PaymentHistory> = mutableListOf(),
+    val paymentHistory: MutableList<Payment> = mutableListOf(),
 ) {
 
     fun updateMoney(price: Int){

@@ -72,7 +72,7 @@ class HomeWorkService(
         // 금액이 부족하면 결제가 안되야함
         if (user.money < 10000) throw IllegalStateException(ResultResponse.FAIL_PAYMENT_MONEY.message)
 
-        val paymentEntity = PaymentHistory.fixture(
+        val paymentEntity = Payment.fixture(
             shop_id = requestPayment.shop.shop_id!!,
             price = requestPayment.price,
             isSuccess = true,

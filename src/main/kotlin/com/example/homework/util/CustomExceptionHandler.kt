@@ -22,12 +22,6 @@ class CustomExceptionHandler {
         return ResponseEntity(BaseResponse(code = ResultCode.ERROR.name, data = errors,), HttpStatus.BAD_REQUEST)
     }
 
-    @ExceptionHandler(InvalidInputException::class)
-    protected fun invalidInputException(ex: InvalidInputException): ResponseEntity<BaseResponse<Map<String, String>>> {
-        val errors = mapOf(ex.fieldName to (ex.message ?: "Not Exception Message"))
-        return ResponseEntity(BaseResponse(code = ResultCode.ERROR.name, data = errors, message = ex.message), HttpStatus.BAD_REQUEST)
-    }
-
     @ExceptionHandler(Exception::class)
     protected fun defaultException(ex: Exception): ResponseEntity<BaseResponse<Map<String, String>>>{
         return ResponseEntity(BaseResponse(code = ResultCode.ERROR.name, message = ex.message), HttpStatus.BAD_REQUEST)

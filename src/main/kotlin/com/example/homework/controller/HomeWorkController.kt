@@ -13,12 +13,9 @@ import org.springframework.web.bind.annotation.*
 class HomeWorkController(
     private val requestPaymentService: HomeWorkService,
 ) {
-
     // 1만원 결제 요청
     @PostMapping("/payment/request")
-    fun requestPayment(@RequestBody @Valid request: RequestPaymentDTO): BaseResponse<Unit>{
-        return BaseResponse(message = requestPaymentService.requestPayment(request))
-    }
+    fun requestPayment(@RequestBody @Valid request: RequestPaymentDTO): BaseResponse<Unit> = BaseResponse(message = requestPaymentService.requestPayment(request))
 
     // 가맹점의 결제 요청 목록들
     @GetMapping("/payment/request")
@@ -32,13 +29,9 @@ class HomeWorkController(
 
     // 결제하기
     @PostMapping("/payment")
-    fun doPayment(@RequestParam requestPayment_id: Long): BaseResponse<Unit>{
-        return BaseResponse(message = requestPaymentService.doPayment(requestPayment_id))
-    }
+    fun doPayment(@RequestParam requestPayment_id: Long): BaseResponse<Unit> = BaseResponse(message = requestPaymentService.doPayment(requestPayment_id))
 
     // 가맹점 등록
     @PostMapping("/shop")
-    fun createShop(@RequestBody request: CreateShopDTO): BaseResponse<Unit>{
-        return BaseResponse(message = requestPaymentService.createShop(request))
-    }
+    fun createShop(@RequestBody request: CreateShopDTO): BaseResponse<Unit> = BaseResponse(message = requestPaymentService.createShop(request))
 }
