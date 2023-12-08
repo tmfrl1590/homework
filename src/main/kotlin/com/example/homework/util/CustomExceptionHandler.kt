@@ -12,7 +12,6 @@ class CustomExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     protected fun methodArgumentNotValidException(ex: MethodArgumentNotValidException): ResponseEntity<BaseResponse<Map<String, String>>>{
-        println("MethodArgumentNotValidException")
         val errors = mutableMapOf<String, String>()
         ex.bindingResult.allErrors.forEach { error ->
             val fieldName = (error as FieldError).field
@@ -20,38 +19,17 @@ class CustomExceptionHandler {
             errors[fieldName] = errorMessage ?: "Not Exception Message"
         }
 
-        return ResponseEntity(
-            BaseResponse(
-                code = ResultCode.ERROR.name,
-                data = errors,
-            ),
-            HttpStatus.BAD_REQUEST
-        )
+        return ResponseEntity(BaseResponse(code = ResultCode.ERROR.name, data = errors,), HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(InvalidInputException::class)
     protected fun invalidInputException(ex: InvalidInputException): ResponseEntity<BaseResponse<Map<String, String>>> {
-        println("InvalidInputException")
         val errors = mapOf(ex.fieldName to (ex.message ?: "Not Exception Message"))
-        return ResponseEntity(
-            BaseResponse(
-                code = ResultCode.ERROR.name,
-                data = errors,
-                message = ex.message
-            ),
-            HttpStatus.BAD_REQUEST
-        )
+        return ResponseEntity(BaseResponse(code = ResultCode.ERROR.name, data = errors, message = ex.message), HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(Exception::class)
     protected fun defaultException(ex: Exception): ResponseEntity<BaseResponse<Map<String, String>>>{
-        println("defaultException")
-        return ResponseEntity(
-            BaseResponse(
-                code = ResultCode.ERROR.name,
-                message = ex.message
-            ),
-            HttpStatus.BAD_REQUEST
-        )
+        return ResponseEntity(BaseResponse(code = ResultCode.ERROR.name, message = ex.message), HttpStatus.BAD_REQUEST)
     }
 }

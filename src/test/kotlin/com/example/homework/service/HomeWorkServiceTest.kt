@@ -1,11 +1,10 @@
 package com.example.homework.service
 
-import com.example.homework.entity.PaymentHistory
+import com.example.homework.dto.RequestPaymentResponse
 import com.example.homework.entity.RequestPayment
 import com.example.homework.entity.Shop
 import com.example.homework.entity.User
 import com.example.homework.repository.*
-import com.example.homework.util.ResultResponse
 import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.repository.findByIdOrNull
 
 @SpringBootTest
 class HomeWorkServiceTest @Autowired constructor(
@@ -23,7 +21,6 @@ class HomeWorkServiceTest @Autowired constructor(
     private val paymentHistoryRepository: PaymentHistoryRepository,
     private val redisRepository: RedisRepository,
 ) {
-
     lateinit var shop: Shop
     lateinit var user: User
 
@@ -45,54 +42,34 @@ class HomeWorkServiceTest @Autowired constructor(
     }
 
     @Test
-    @DisplayName("1만원 결제 요청에 대한 결제하기 성공")
-    fun doPaymentSuccess(){
-        // given
-        val entity = RequestPayment.fixture(
+    @DisplayName("가맹점의 결제 요청 목록들")
+    fun getRequestPayment(){
+        // given - 결제요청
+        val entity = RequestPayment.of(
             requestPayment_id = null,
             shopName = shop.shopName,
             price = 10000,
             shop = shop,
             user = user,
         )
-        val requestPayment = requestPaymentRepository.save(entity)
+        requestPaymentRepository.save(entity)
 
         // when
-        val resultRequestPayment = requestPaymentRepository.findByIdOrNull(requestPayment.requestPayment_id) ?: throw IllegalStateException(ResultResponse.NOT_EXIST_PAYMENT_REQUEST.message)
-
-        // 이미 완료된 결제 요청인지 체크
-        if (resultRequestPayment.isComplete) throw IllegalStateException(ResultResponse.COMPLETED_PAYMENT_REQUEST.message)
-
-        // 금액이 부족하면 결제가 안되야함
-        if (user.money < 10000) throw IllegalStateException(ResultResponse.FAIL_PAYMENT_MONEY.message)
-
-        // 결제하기
-        val paymentEntity = PaymentHistory.fixture(
-            shop_id = resultRequestPayment.shop.shop_id!!,
-            price = resultRequestPayment.price,
-            isSuccess = true,
-            requestPayment_id = resultRequestPayment.requestPayment_id!!,
-            user = user,
-        )
-
-        paymentHistoryRepository.save(paymentEntity) // 결제
-
-        // 결제가 끝나면 결제요청의 완료처리, 돈 차감
-        resultRequestPayment.completeRequestPayment()
-        user.updateMoney(10000)
+        val resultList = requestPaymentRepository.findAll()
+            .filter { it.user.user_id == user.user_id && !it.isComplete }
+            .map {requestPayment -> RequestPaymentResponse.of(requestPayment)}
 
         // then
-        val resultPaymentHistory = paymentHistoryRepository.findAll()
-        assertThat(resultPaymentHistory).hasSize(1)
-
-
+        assertThat(resultList).hasSize(1)
+        assertThat(resultList[0].price).isEqualTo(10000)
+        assertThat(resultList[0].shopName).isEqualTo("더드림")
     }
 
     @Test
     @DisplayName("1만원 결제요청 성공한다.")
-    fun requestPayment(){
+    fun requestPaymentSuccess(){
         // given
-        val entity = RequestPayment.fixture(
+        val entity = RequestPayment.of(
             requestPayment_id = null,
             shopName = shop.shopName,
             price = 10000,
@@ -108,6 +85,30 @@ class HomeWorkServiceTest @Autowired constructor(
         assertThat(resultRequest).hasSize(1)
         assertThat(resultRequest[0].shopName).isEqualTo("더드림")
         assertThat(resultRequest[0].price).isEqualTo(10000)
+        assertThat(resultRequest[0].user.email).isEqualTo("tmfrl1570@naver.com")
+    }
+
+    @Test
+    @DisplayName("1만원 이외 금액의 결제요청은 실패한다.")
+    fun requestPaymentFail(){
+        // given
+        val entity = RequestPayment.of(
+            requestPayment_id = null,
+            shopName = shop.shopName,
+            price = 10000,
+            shop = shop,
+            user = user,
+        )
+
+        // when
+        requestPaymentRepository.save(entity) // 저장(결제요청)
+
+        // then
+        val resultRequest = requestPaymentRepository.findAll()
+        assertThat(resultRequest).hasSize(1)
+        assertThat(resultRequest[0].shopName).isEqualTo("더드림")
+        assertThat(resultRequest[0].price).isNotEqualTo(10001)
+        assertThat(resultRequest[0].price).isNotEqualTo(9999)
         assertThat(resultRequest[0].user.email).isEqualTo("tmfrl1570@naver.com")
 
     }

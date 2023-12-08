@@ -33,7 +33,7 @@ class RequestPayment(
     }
 
     companion object{
-        fun fixture(
+        fun of(
             requestPayment_id: Long? = null,
             shopName: String,
             price: Int,

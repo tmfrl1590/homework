@@ -26,8 +26,7 @@ class HomeWorkController(
         val resultList = requestPaymentService.getRequestPayment()
         return BaseResponse(
             data = resultList,
-            message = if(resultList.isNotEmpty()) ResultResponse.SUCCESS_PAYMENT_REQUEST.message
-                      else ResultResponse.SUCCESS_PAYMENT_REQUEST_NODATA.message
+            message = if(resultList.isNotEmpty()) ResultResponse.SUCCESS_PAYMENT_REQUEST.message else ResultResponse.SUCCESS_PAYMENT_REQUEST_NODATA.message
         )
     }
 
